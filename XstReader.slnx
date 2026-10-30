@@ -1,0 +1,9 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/XstReader.Core/XstReader.Core.csproj" />
+    <Project Path="src/XstReader.App/XstReader.App.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/XstReader.Checks/XstReader.Checks.csproj" />
+  </Folder>
+</Solution>

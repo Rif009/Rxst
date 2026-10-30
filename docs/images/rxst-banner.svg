@@ -1,0 +1,33 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="340" viewBox="0 0 1200 340" role="img" aria-labelledby="title desc">
+  <title id="title">Rxst — Outlook PST and OST viewer</title>
+  <desc id="desc">Open Outlook email archives, search multiple mailboxes and read messages without Microsoft Outlook.</desc>
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#1c1b26"/><stop offset="1" stop-color="#121218"/></linearGradient>
+    <linearGradient id="purple" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#ab8cf0"/><stop offset="1" stop-color="#7048be"/></linearGradient>
+    <radialGradient id="glow"><stop stop-color="#7952c5" stop-opacity=".32"/><stop offset="1" stop-color="#7952c5" stop-opacity="0"/></radialGradient>
+    <clipPath id="canvas"><rect x="1" y="1" width="1198" height="338" rx="26"/></clipPath>
+  </defs>
+  <rect x="1" y="1" width="1198" height="338" rx="26" fill="url(#bg)" stroke="#36303f"/>
+  <g clip-path="url(#canvas)"><ellipse cx="1010" cy="160" rx="270" ry="230" fill="url(#glow)"/>
+  <g fill="none" stroke="#65517f" stroke-opacity=".22"><circle cx="1035" cy="165" r="132"/><circle cx="1035" cy="165" r="176"/><path d="M790 300L1160 40M800 38L1160 300"/></g></g>
+  <g font-family="Inter, Segoe UI, Arial, sans-serif">
+    <text x="64" y="52" fill="#b9a9d2" font-size="16" letter-spacing="2">LOCAL MAIL. CLEAR FOCUS.</text>
+    <text x="60" y="153" fill="#f4f0fb" font-size="88" font-weight="700" letter-spacing="-3">Rxst</text>
+    <text x="65" y="203" fill="#c4bdd1" font-size="27">Your Outlook archives. One clear view.</text>
+    <g font-size="13" font-weight="600" letter-spacing=".5">
+      <rect x="64" y="246" width="124" height="36" rx="9" fill="#2c253d" stroke="#49395f"/><text x="126" y="269" fill="#d5c0fc" text-anchor="middle">PST + OST</text>
+      <rect x="201" y="246" width="231" height="36" rx="9" fill="#25232e" stroke="#3b3549"/><text x="316" y="269" fill="#d1c9df" text-anchor="middle">MULTI-ARCHIVE SEARCH</text>
+      <rect x="445" y="246" width="210" height="36" rx="9" fill="#25232e" stroke="#3b3549"/><text x="550" y="269" fill="#d1c9df" text-anchor="middle">NO OUTLOOK NEEDED</text>
+    </g>
+    <text x="1133" y="308" fill="#a69ab9" font-size="14" text-anchor="end">by rif009</text>
+  </g>
+  <g transform="translate(902 65) rotate(-6 105 105)">
+    <rect width="210" height="210" rx="49" fill="url(#purple)" stroke="#c5a9ff" stroke-opacity=".45"/>
+    <rect x="38" y="42" width="136" height="93" rx="13" fill="#ccb9fa"/>
+    <rect x="27" y="62" width="156" height="105" rx="16" fill="#fff"/>
+    <path d="M31 72L105 125L179 72" fill="#eee5ff" stroke="#7955bb" stroke-width="7" stroke-linejoin="round"/>
+    <path d="M32 155L73 119M178 155L137 119" fill="none" stroke="#dacbf2" stroke-width="6"/>
+    <rect x="129" y="144" width="62" height="42" rx="12" fill="#302243"/>
+    <rect x="146" y="157" width="28" height="6" rx="3" fill="#dbc5ff"/>
+  </g>
+</svg>

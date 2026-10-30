@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="272" height="56" viewBox="0 0 272 56" role="img" aria-label="Download Rxst from GitHub Releases">
+  <defs><linearGradient id="a" x2="1" y2="1"><stop stop-color="#9672dc"/><stop offset="1" stop-color="#7047b5"/></linearGradient></defs>
+  <rect x=".5" y=".5" width="271" height="55" rx="12" fill="url(#a)" stroke="#b79be9"/>
+  <path d="M28 16V32M22 26L28 32L34 26M19 34V40H37V34" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+  <text x="57" y="34" fill="white" font-family="Inter, Segoe UI, Arial, sans-serif" font-size="17" font-weight="600">Download for Windows</text>
+</svg>

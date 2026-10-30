@@ -1,0 +1,8 @@
+**/bin/
+**/obj/
+.vs/
+upstream/
+test-reference/
+html-reference/
+artifacts/
+*.user

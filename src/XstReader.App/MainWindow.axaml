@@ -1,0 +1,265 @@
+<Window xmlns="https://github.com/avaloniaui" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:local="using:XstReader.App" xmlns:html="clr-namespace:TheArtOfDev.HtmlRenderer.Avalonia;assembly=Avalonia.HtmlRenderer" x:Class="XstReader.App.MainWindow"
+        Icon="/Assets/xst.ico" Title="{local:Tr Title}" Width="1460" Height="900" MinWidth="1180" MinHeight="700">
+  <Grid RowDefinitions="64,*,30">
+    <Border Background="{DynamicResource Header}" BorderBrush="{DynamicResource Border}" BorderThickness="0,0,0,1" Padding="20,12">
+      <Grid ColumnDefinitions="260,*,Auto" VerticalAlignment="Center">
+        <StackPanel Orientation="Horizontal" Spacing="12" VerticalAlignment="Center">
+          <Image Source="/Assets/xst.png" Width="38" Height="38"/>
+          <TextBlock Text="Rxst" FontSize="19" FontWeight="SemiBold" VerticalAlignment="Center"/>
+          <TextBlock Text="/  mail archive" Classes="muted" VerticalAlignment="Center"/>
+        </StackPanel>
+        <Grid Grid.Column="1" MaxWidth="660" HorizontalAlignment="Stretch">
+        <TextBox Name="SearchBox" Text="{Binding Query, Mode=TwoWay}" Watermark="{local:Tr SearchHint}" IsEnabled="{Binding ShowMailbox}" HorizontalAlignment="Stretch" LostFocus="SearchLostFocus">
+          <TextBox.InnerRightContent>
+            <StackPanel Orientation="Horizontal" Spacing="2" Margin="4,0">
+              <Button Classes="ghost" Width="30" Height="30" Padding="8" Click="ClearSearch" IsVisible="{Binding HasQuery}" ToolTip.Tip="{local:Tr ClearSearch}" AutomationProperties.Name="{local:Tr ClearSearch}">
+                <Path Data="M4 4L16 16 M16 4L4 16" Stroke="{DynamicResource PrimaryText}" StrokeThickness="1.7" Width="13" Height="13" Stretch="Uniform"/>
+              </Button>
+              <Button Name="HistoryButton" Classes="ghost" Width="30" Height="30" Padding="7" ToolTip.Tip="{local:Tr SearchHistory}" AutomationProperties.Name="{local:Tr SearchHistory}">
+                <Path Data="M4 6A9 9 0 1 1 3 16 M4 2V7H9 M12 6V12L16 14" Stroke="{DynamicResource MutedText}" StrokeThickness="1.6" Width="17" Height="17" Stretch="Uniform"/>
+                <Button.Flyout><Flyout Placement="BottomEdgeAlignedRight"><StackPanel MinWidth="300" MaxWidth="420" Spacing="10">
+                  <TextBlock Text="{local:Tr SearchHistory}" FontWeight="SemiBold" FontSize="14"/>
+                  <TextBlock Text="{local:Tr NoSearchHistory}" Classes="muted" IsVisible="{Binding NoHistory}" Margin="0,6"/>
+                  <ScrollViewer MaxHeight="320" HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto"><ItemsControl ItemsSource="{Binding SearchHistory}"><ItemsControl.ItemTemplate><DataTemplate>
+                    <Button Click="UseSearchHistory" Classes="ghost" HorizontalAlignment="Stretch" HorizontalContentAlignment="Left" ToolTip.Tip="{Binding}"><TextBlock Text="{Binding}" TextTrimming="CharacterEllipsis" MaxWidth="360"/></Button>
+                  </DataTemplate></ItemsControl.ItemTemplate></ItemsControl></ScrollViewer>
+                </StackPanel></Flyout></Button.Flyout>
+              </Button>
+            </StackPanel>
+          </TextBox.InnerRightContent>
+        </TextBox>
+        <Popup Name="SearchSuggestionsPopup" PlacementTarget="{Binding #SearchBox}" Placement="Bottom" VerticalOffset="6" IsLightDismissEnabled="False" IsHitTestVisible="True">
+          <Border Width="{Binding Bounds.Width, ElementName=SearchBox}" MinWidth="360" MaxWidth="660" Background="{DynamicResource Card}" BorderBrush="{DynamicResource InputBorder}" BorderThickness="1" CornerRadius="10" Padding="6" BoxShadow="0 8 24 0 #50000000">
+            <StackPanel Spacing="4">
+              <TextBlock Text="{local:Tr SuggestionTitle}" Classes="muted" FontSize="11" Margin="10,6"/>
+              <ListBox Name="SearchSuggestionsList" Background="Transparent" BorderThickness="0" Focusable="False" MaxHeight="430" Tapped="ChooseSearchSuggestion" AutomationProperties.Name="{local:Tr SuggestionTitle}">
+                <ListBox.Styles><Style Selector="ListBoxItem"><Setter Property="Focusable" Value="False"/><Setter Property="MinHeight" Value="54"/><Setter Property="Padding" Value="10,7"/><Setter Property="Margin" Value="0,1"/></Style></ListBox.Styles>
+                <ListBox.ItemTemplate><DataTemplate>
+                  <Grid ColumnDefinitions="120,*" RowDefinitions="Auto,Auto">
+                    <TextBlock Text="{Binding Label}" FontFamily="Cascadia Code, Consolas, monospace" FontWeight="SemiBold" Foreground="{DynamicResource Breadcrumb}" VerticalAlignment="Center"/>
+                    <TextBlock Grid.Column="1" Text="{Binding Description}" TextWrapping="Wrap" FontSize="12" VerticalAlignment="Center"/>
+                    <TextBlock Grid.Row="1" Grid.Column="1" Text="{Binding Availability}" IsVisible="{Binding IsDisabled}" Classes="muted" FontSize="11" TextWrapping="Wrap" Margin="0,3,0,0"/>
+                  </Grid>
+                </DataTemplate></ListBox.ItemTemplate>
+              </ListBox>
+              <TextBlock Text="{local:Tr SuggestionKeys}" Classes="muted" FontSize="10" Margin="10,6"/>
+            </StackPanel>
+          </Border>
+        </Popup>
+        </Grid>
+        <StackPanel Grid.Column="2" Orientation="Horizontal" Spacing="10" Margin="20,0,0,0">
+          <Button Content="{local:Tr AddArchives}" Classes="accent" Click="OpenArchive" IsEnabled="{Binding CanInteract}" ToolTip.Tip="{local:Tr OpenHint}"/>
+          <Button Content="◐" ToolTip.Tip="{local:Tr Theme}" Click="ToggleTheme"/>
+        </StackPanel>
+      </Grid>
+    </Border>
+<Grid Grid.Row="1" ColumnDefinitions="56,300,5,350,5,*">
+      <Border Background="{DynamicResource Rail}" BorderBrush="{DynamicResource BorderSoft}" BorderThickness="0,0,1,0">
+        <Grid RowDefinitions="Auto,*,Auto" Margin="7,18">
+          <Button Content="✉" Classes="accent" ToolTip.Tip="{local:Tr Mail}" Click="ShowMail"/>
+          <Button Grid.Row="2" Classes="ghost" Click="OpenSettings" ToolTip.Tip="{local:Tr Settings}" AutomationProperties.Name="{local:Tr Settings}" Width="40" Height="40" Padding="9" HorizontalContentAlignment="Center" VerticalContentAlignment="Center">
+            <Path Data="M9.5 2H14.5L15.1 5.1L17.6 6.5L20.6 5.5L23 9.7L20.7 11.8V14.2L23 16.3L20.6 20.5L17.6 19.5L15.1 20.9L14.5 24H9.5L8.9 20.9L6.4 19.5L3.4 20.5L1 16.3L3.3 14.2V11.8L1 9.7L3.4 5.5L6.4 6.5L8.9 5.1Z M16 13A4 4 0 1 1 8 13A4 4 0 1 1 16 13Z" Stroke="{DynamicResource PrimaryText}" StrokeThickness="1.6" Width="20" Height="20" Stretch="Uniform"/>
+          </Button>
+        </Grid>
+      </Border>
+      <Border Grid.Column="1" IsVisible="{Binding ShowMailbox}" Background="{DynamicResource Sidebar}" Padding="16,22,10,14">
+        <Grid RowDefinitions="Auto,Auto,*">
+          <StackPanel Spacing="6" Margin="4,0,0,20">
+            <TextBlock Text="{local:Tr Workspace}" FontSize="10" LetterSpacing="1.4" Classes="muted"/>
+            <TextBlock Text="{Binding ArchiveName}" FontSize="16" FontWeight="SemiBold" TextTrimming="CharacterEllipsis" ToolTip.Tip="{Binding ArchivePath}"/>
+          </StackPanel>
+          <StackPanel Grid.Row="1" Spacing="8" Margin="4,0,0,12">
+            <TextBlock Text="{local:Tr Folders}" FontSize="10" LetterSpacing="1.4" Classes="muted"/>
+            <TextBlock Text="{local:Tr ArchiveSelectionHelp}" FontSize="11" Classes="muted" TextWrapping="Wrap"/>
+            <Grid ColumnDefinitions="*,Auto,Auto">
+              <TextBlock Text="{Binding ArchiveSelectionLabel}" Foreground="{DynamicResource Breadcrumb}" FontSize="11" VerticalAlignment="Center"/>
+              <Button Grid.Column="1" Content="{local:Tr SelectAllArchives}" Classes="ghost" Padding="7,5" FontSize="11" Click="SelectAllArchives" IsEnabled="{Binding CanInteract}"/>
+              <Button Grid.Column="2" Content="{local:Tr DeselectArchives}" Classes="ghost" Padding="7,5" FontSize="11" Click="DeselectArchives" IsEnabled="{Binding CanInteract}"/>
+            </Grid>
+          </StackPanel>
+          <TreeView Grid.Row="2" ItemsSource="{Binding Folders}" SelectedItem="{Binding SelectedFolder, Mode=TwoWay}" IsEnabled="{Binding CanInteract}" Background="Transparent" ScrollViewer.HorizontalScrollBarVisibility="Disabled">
+            <TreeView.ItemTemplate><TreeDataTemplate ItemsSource="{Binding Children}" DataType="local:MailFolder">
+              <Grid ColumnDefinitions="Auto,18,*,Auto" Margin="0,5" HorizontalAlignment="Stretch" ToolTip.Tip="{Binding Description}">
+                <Grid.ContextMenu><ContextMenu><MenuItem Header="{local:Tr CloseArchive}" Click="CloseArchive" IsVisible="{Binding IsArchive}"/></ContextMenu></Grid.ContextMenu>
+                <CheckBox IsVisible="{Binding IsArchive}" IsChecked="{Binding IsIncluded, Mode=TwoWay}" Margin="0,0,7,0" MinWidth="20" MinHeight="28" Padding="0" VerticalAlignment="Center" PointerPressed="ArchiveCheckboxPressed" ToolTip.Tip="{local:Tr IncludeArchive}" AutomationProperties.Name="{Binding Name}"/>
+                <TextBlock Grid.Column="1" Text="{Binding Icon}" Foreground="{DynamicResource FolderIcon}" VerticalAlignment="Center"/>
+                <TextBlock Grid.Column="2" Text="{Binding Name}" TextWrapping="Wrap" MaxLines="2" TextTrimming="CharacterEllipsis" VerticalAlignment="Center"/>
+                <Border Grid.Column="3" Background="#4C3A70" CornerRadius="6" Padding="7,3" Margin="8,0,2,0" MinWidth="28" VerticalAlignment="Center" IsVisible="{Binding HasCount}">
+                  <TextBlock Text="{Binding Count}" Foreground="#F7F1FF" FontSize="13" FontWeight="SemiBold" HorizontalAlignment="Center"/>
+                </Border>
+              </Grid>
+            </TreeDataTemplate></TreeView.ItemTemplate>
+          </TreeView>
+        </Grid>
+      </Border>
+      <GridSplitter IsVisible="{Binding ShowMailbox}" Grid.Column="2" ResizeDirection="Columns" Background="{DynamicResource Divider}"/>
+      <Grid IsVisible="{Binding ShowMailbox}" Grid.Column="3" RowDefinitions="Auto,Auto,Auto,Auto,*" Background="{DynamicResource List}">
+        <Grid ColumnDefinitions="*,Auto" Margin="20,22,18,16">
+          <StackPanel Spacing="5"><TextBlock Text="{Binding FolderTitle}" FontSize="22" FontWeight="SemiBold" TextTrimming="CharacterEllipsis" ToolTip.Tip="{Binding FolderTitle}"/><TextBlock Text="{Binding ResultLabel}" Classes="muted" FontSize="11"/></StackPanel>
+          <Button Grid.Column="1" Content="{local:Tr ResetFilters}" Classes="ghost" Click="ResetFilters" VerticalAlignment="Center"/>
+        </Grid>
+        <StackPanel Grid.Row="1" Margin="18,0,18,8" Spacing="8">
+          <StackPanel Orientation="Horizontal" Spacing="15"><CheckBox Content="{local:Tr Unread}" IsChecked="{Binding UnreadOnly}"/><CheckBox Content="{local:Tr WithAttachments}" IsChecked="{Binding AttachmentsOnly}"/></StackPanel>
+          <CheckBox Content="{local:Tr GlobalSearch}" IsChecked="{Binding AllFolders}" IsEnabled="{Binding CanInteract}"/>
+          <TextBlock Text="{Binding IndexSummary}" IsVisible="{Binding IsIndexing}" Classes="muted" FontSize="11" TextWrapping="Wrap"/>
+          <TextBlock Text="{Binding SearchProgress}" IsVisible="{Binding IsSearching}" Classes="muted" FontSize="11"/>
+          <TextBlock Text="{Binding ArchiveSelectionLabel}" IsVisible="{Binding AllFolders}" Foreground="{DynamicResource Breadcrumb}" FontSize="11" Margin="28,0,0,0"/>
+        </StackPanel>
+        <Expander Grid.Row="2" Header="{local:Tr AdvancedFilters}" Margin="16,0,16,10" HorizontalContentAlignment="Stretch">
+          <StackPanel Spacing="10" Margin="0,10">
+            <TextBox Text="{Binding SenderFilter}" Watermark="{local:Tr SenderHint}"/>
+            <TextBlock Text="{local:Tr DateRange}" Classes="muted"/>
+            <CalendarDatePicker SelectedDate="{Binding DateFrom}" Watermark="{local:Tr DateFrom}" HorizontalAlignment="Stretch"/>
+            <CalendarDatePicker SelectedDate="{Binding DateTo}" Watermark="{local:Tr DateTo}" HorizontalAlignment="Stretch"/>
+          </StackPanel>
+        </Expander>
+        <Grid Grid.Row="3" ColumnDefinitions="*,Auto" Margin="20,0,18,10">
+          <TextBlock Text="{local:Tr Messages}" LetterSpacing="1" FontSize="10" Classes="muted" VerticalAlignment="Center"/>
+          <ComboBox Grid.Column="1" ItemsSource="{Binding SortChoices}" SelectedIndex="{Binding SortIndex}" MinWidth="170" FontSize="11">
+            <ComboBox.ItemTemplate><DataTemplate><TextBlock Text="{Binding Value}"/></DataTemplate></ComboBox.ItemTemplate>
+          </ComboBox>
+        </Grid>
+        <Grid Grid.Row="4">
+          <ListBox ItemsSource="{Binding Messages}" SelectedItem="{Binding SelectedMail, Mode=TwoWay}" Background="Transparent" BorderThickness="0" IsEnabled="{Binding CanInteract}">
+            <ListBox.ItemTemplate><DataTemplate DataType="local:MailItem">
+              <Grid ColumnDefinitions="34,*" RowDefinitions="Auto,Auto,Auto,Auto" Margin="0,3" ToolTip.Tip="{Binding LocationLabel}">
+                <Border Background="{DynamicResource Avatar}" CornerRadius="10" Width="30" Height="30" VerticalAlignment="Top"><TextBlock Text="{Binding Initials}" FontSize="10" Foreground="{DynamicResource AvatarText}" HorizontalAlignment="Center" VerticalAlignment="Center"/></Border>
+                <Grid Grid.Column="1" ColumnDefinitions="*,Auto" Margin="9,0,0,0"><TextBlock Text="{Binding Sender}" FontWeight="SemiBold" TextTrimming="CharacterEllipsis"/><TextBlock Grid.Column="1" Text="{Binding ReadMark}" Foreground="{DynamicResource Unread}" Margin="5,0"/></Grid>
+                <TextBlock Grid.Column="1" Grid.Row="1" Text="{Binding Subject}" Margin="9,7,0,0" TextTrimming="CharacterEllipsis"/>
+                <Grid Grid.Column="1" Grid.Row="2" ColumnDefinitions="*,Auto" Margin="9,9,0,2"><TextBlock Text="{Binding DateLabel}" Classes="muted" FontSize="10"/><TextBlock Grid.Column="1" Text="{Binding AttachmentMark}" Foreground="{DynamicResource Attachment}" FontSize="10"/></Grid>
+                <TextBlock Grid.Column="1" Grid.Row="3" Text="{Binding ArchiveName}" Foreground="{DynamicResource Breadcrumb}" FontSize="10" Margin="9,4,0,0" TextTrimming="CharacterEllipsis"/>
+              </Grid>
+            </DataTemplate></ListBox.ItemTemplate>
+          </ListBox>
+          <StackPanel IsVisible="{Binding NoResults}" HorizontalAlignment="Center" VerticalAlignment="Center" Spacing="12" Margin="24"><TextBlock Text="{Binding EmptyResultTitle}" FontSize="17" HorizontalAlignment="Center"/><TextBlock Text="{Binding EmptyResultHint}" Classes="muted" TextWrapping="Wrap"/></StackPanel>
+        </Grid>
+      </Grid>
+      <GridSplitter IsVisible="{Binding ShowMailbox}" Grid.Column="4" ResizeDirection="Columns" Background="{DynamicResource Divider}"/>
+      <Grid IsVisible="{Binding ShowMailbox}" Grid.Column="5" RowDefinitions="Auto,*" Background="{DynamicResource Reader}">
+        <Border Padding="22,14" BorderBrush="{DynamicResource ReaderBorder}" BorderThickness="0,0,0,1">
+          <Grid ColumnDefinitions="*,Auto"><TextBlock Text="{local:Tr ReadingPane}" Classes="muted" FontSize="10" LetterSpacing="1.3" VerticalAlignment="Center"/>
+            <Button Grid.Column="1" Content="{local:Tr Export}" IsEnabled="{Binding CanExport}">
+              <Button.Flyout><MenuFlyout><MenuItem Header="{local:Tr ExportText}" Click="ExportMail"/><MenuItem Header="{local:Tr ExportNative}" Click="ExportNative"/><MenuItem Header="{local:Tr ExportProperties}" Click="ExportProperties"/></MenuFlyout></Button.Flyout>
+            </Button>
+          </Grid>
+        </Border>
+        <Grid Grid.Row="1">
+          <StackPanel IsVisible="{Binding NoSelection}" HorizontalAlignment="Center" VerticalAlignment="Center" Spacing="15"><TextBlock Text="✉" FontSize="42" Foreground="{DynamicResource EmptyIcon}" HorizontalAlignment="Center"/><TextBlock Text="{local:Tr SelectMail}" FontSize="20"/><TextBlock Text="{local:Tr SelectMailHint}" Classes="muted"/></StackPanel>
+          <ScrollViewer IsVisible="{Binding HasSelection}" HorizontalScrollBarVisibility="Disabled">
+            <StackPanel Margin="32,28" Spacing="20">
+              <TextBlock Text="{Binding SelectedMail.LocationLabel}" Foreground="{DynamicResource Breadcrumb}" FontSize="11" TextWrapping="Wrap"/>
+              <TextBlock Text="{Binding SelectedMail.Subject}" FontSize="25" FontWeight="SemiBold" TextWrapping="Wrap"/>
+              <Border Background="{DynamicResource Card}" CornerRadius="10" Padding="18">
+                <Grid ColumnDefinitions="42,*" RowDefinitions="Auto,Auto,Auto">
+                  <Border Background="{DynamicResource AvatarLarge}" CornerRadius="20" Width="36" Height="36" VerticalAlignment="Top"><TextBlock Text="{Binding SelectedMail.Initials}" HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="{DynamicResource AvatarLargeText}"/></Border>
+                  <StackPanel Grid.Column="1" Spacing="7"><TextBlock Text="{Binding SelectedMail.Sender}" FontWeight="SemiBold" TextWrapping="Wrap"/><TextBlock Text="{Binding RecipientLabel}" Classes="muted" TextWrapping="Wrap" FontSize="11"/><TextBlock Text="{Binding SelectedMail.DateLabel}" Classes="muted" FontSize="11"/></StackPanel>
+                </Grid>
+              </Border>
+              <StackPanel Spacing="12" IsVisible="{Binding HasAttachments}">
+                <TextBlock Text="{Binding AttachmentSummary}" Classes="muted" FontSize="12" FontWeight="SemiBold"/>
+                <ItemsControl ItemsSource="{Binding Attachments}"><ItemsControl.ItemTemplate><DataTemplate DataType="local:AttachmentItem">
+                  <local:AttachmentCard SaveRequested="SaveAttachment"/>
+                </DataTemplate></ItemsControl.ItemTemplate></ItemsControl>
+              </StackPanel>
+              <CheckBox Content="{local:Tr PlainText}" IsChecked="{Binding TextMode}" IsVisible="{Binding HasHtml}"/>
+              <Border Background="White" CornerRadius="8" Padding="18" IsVisible="{Binding ShowHtml}">
+                <html:HtmlLabel Name="HtmlContent" Text="{Binding Html}" AutoSize="False" AutoSizeHeightOnly="True" IsSelectionEnabled="True" IsContextMenuEnabled="False" Background="White"/>
+              </Border>
+              <SelectableTextBlock Text="{Binding Body}" IsVisible="{Binding ShowText}" TextWrapping="Wrap" FontSize="{Binding Settings.MailFontSize}" LineHeight="28"/>
+              <Expander Header="{local:Tr Properties}" HorizontalAlignment="Stretch"><SelectableTextBlock Text="{Binding Properties}" TextWrapping="Wrap" FontFamily="Consolas" FontSize="11" Margin="0,12"/></Expander>
+            </StackPanel>
+          </ScrollViewer>
+        </Grid>
+      </Grid>
+      <ScrollViewer Grid.Column="1" Grid.ColumnSpan="5" IsVisible="{Binding ShowWelcome}" HorizontalScrollBarVisibility="Disabled">
+        <StackPanel MaxWidth="860" Margin="50,54" Spacing="24" HorizontalAlignment="Center" VerticalAlignment="Center">
+          <Image Source="/Assets/xst.png" Width="88" Height="88" HorizontalAlignment="Left"/>
+          <TextBlock Text="{local:Tr WelcomeTag}" Foreground="{DynamicResource Breadcrumb}" FontSize="11" LetterSpacing="2"/>
+          <TextBlock Text="{local:Tr WelcomeTitle}" FontSize="36" FontWeight="SemiBold" TextWrapping="Wrap"/>
+          <TextBlock Text="{local:Tr WelcomeBody}" Classes="muted" FontSize="17" LineHeight="28" TextWrapping="Wrap" MaxWidth="690" HorizontalAlignment="Left"/>
+          <StackPanel Orientation="Horizontal" Spacing="12" Margin="0,6,0,14">
+            <Button Content="{local:Tr WelcomeOpen}" Classes="accent" Padding="22,14" Click="OpenArchive" IsEnabled="{Binding CanInteract}"/>
+            <Button Content="{local:Tr Settings}" Classes="ghost" Padding="22,14" Click="OpenSettings"/>
+          </StackPanel>
+          <Grid ColumnDefinitions="*,*">
+            <Border Background="{DynamicResource Card}" CornerRadius="12" Padding="24" Margin="0,0,10,0"><StackPanel Spacing="12"><TextBlock Text="{local:Tr WelcomeMulti}" FontSize="16" FontWeight="SemiBold" TextWrapping="Wrap"/><TextBlock Text="{local:Tr WelcomeMultiBody}" Classes="muted" TextWrapping="Wrap" LineHeight="22"/></StackPanel></Border>
+            <Border Grid.Column="1" Background="{DynamicResource Card}" CornerRadius="12" Padding="24" Margin="10,0,0,0"><StackPanel Spacing="12"><TextBlock Text="{local:Tr WelcomeRead}" FontSize="16" FontWeight="SemiBold" TextWrapping="Wrap"/><TextBlock Text="{local:Tr WelcomeReadBody}" Classes="muted" TextWrapping="Wrap" LineHeight="22"/></StackPanel></Border>
+          </Grid>
+        </StackPanel>
+      </ScrollViewer>
+      <ScrollViewer Grid.Column="1" Grid.ColumnSpan="5" IsVisible="{Binding ShowSettings}" HorizontalScrollBarVisibility="Disabled">
+        <StackPanel MaxWidth="860" Margin="48,34" Spacing="22" HorizontalAlignment="Stretch">
+          <TextBlock Text="{local:Tr Settings}" FontSize="32" FontWeight="SemiBold"/>
+          <TextBlock Text="{local:Tr SettingsHint}" Classes="muted" TextWrapping="Wrap" LineHeight="22"/>
+          <Border Background="{DynamicResource Card}" CornerRadius="12" Padding="24">
+            <StackPanel Spacing="18">
+              <TextBlock Text="{local:Tr General}" FontSize="18" FontWeight="SemiBold"/>
+              <Grid ColumnDefinitions="*,240"><TextBlock Text="{local:Tr Language}" VerticalAlignment="Center"/><ComboBox Grid.Column="1" SelectedIndex="{Binding Settings.LanguageIndex}" HorizontalAlignment="Stretch"><ComboBoxItem Content="Русский"/><ComboBoxItem Content="English"/></ComboBox></Grid>
+              <Grid ColumnDefinitions="*,240"><TextBlock Text="{local:Tr Theme}" VerticalAlignment="Center"/><ComboBox Grid.Column="1" ItemsSource="{Binding ThemeChoices}" SelectedIndex="{Binding Settings.ThemeIndex}" HorizontalAlignment="Stretch"><ComboBox.ItemTemplate><DataTemplate><TextBlock Text="{Binding Value}"/></DataTemplate></ComboBox.ItemTemplate></ComboBox></Grid>
+            </StackPanel>
+          </Border>
+          <Border Background="{DynamicResource Card}" CornerRadius="12" Padding="24">
+            <StackPanel Spacing="14">
+              <TextBlock Text="{local:Tr Reading}" FontSize="18" FontWeight="SemiBold" Margin="0,0,0,4"/>
+              <CheckBox Content="{local:Tr EnableHtml}" IsChecked="{Binding Settings.EnableHtml}"/>
+              <TextBlock Text="{local:Tr EnableHtmlHint}" Classes="muted" Margin="28,-8,0,4" TextWrapping="Wrap"/>
+              <CheckBox Content="{local:Tr ExternalResources}" IsChecked="{Binding Settings.AllowExternalResources}"/>
+              <TextBlock Text="{local:Tr ExternalHint}" Classes="muted" Margin="28,-8,0,4" TextWrapping="Wrap" LineHeight="21"/>
+              <CheckBox Content="{local:Tr InlineImages}" IsChecked="{Binding Settings.ShowInlineImages}"/>
+              <TextBlock Text="{local:Tr InlineHint}" Classes="muted" Margin="28,-8,0,4" TextWrapping="Wrap"/>
+              <Grid ColumnDefinitions="*,110"><TextBlock Text="{local:Tr MailFontSize}" VerticalAlignment="Center"/><NumericUpDown Grid.Column="1" Value="{Binding Settings.MailFontSize}" Minimum="12" Maximum="22" Increment="1" FormatString="0"/></Grid>
+            </StackPanel>
+          </Border>
+          <Border Background="{DynamicResource Card}" CornerRadius="12" Padding="24">
+            <StackPanel Spacing="16">
+              <TextBlock Text="{local:Tr Behavior}" FontSize="18" FontWeight="SemiBold"/>
+              <CheckBox Content="{local:Tr AutoSelect}" IsChecked="{Binding Settings.AutoSelectFirstMessage}"/>
+              <CheckBox Content="{local:Tr DefaultGlobal}" IsChecked="{Binding Settings.SearchAllArchives}"/>
+              <Grid ColumnDefinitions="*,240"><TextBlock Text="{local:Tr DefaultSort}" VerticalAlignment="Center"/><ComboBox Grid.Column="1" ItemsSource="{Binding SortChoices}" SelectedIndex="{Binding Settings.DefaultSort}" HorizontalAlignment="Stretch"><ComboBox.ItemTemplate><DataTemplate><TextBlock Text="{Binding Value}"/></DataTemplate></ComboBox.ItemTemplate></ComboBox></Grid>
+            </StackPanel>
+          </Border>
+          <Border Background="{DynamicResource Card}" CornerRadius="12" Padding="24"><StackPanel Spacing="14">
+            <TextBlock Text="{local:Tr ContentSearchSettings}" FontSize="18" FontWeight="SemiBold"/>
+            <CheckBox Content="{local:Tr SearchBody}" IsChecked="{Binding Settings.SearchBody}"/>
+            <CheckBox Content="{local:Tr SearchAttachmentNames}" IsChecked="{Binding Settings.SearchAttachmentNames}"/>
+            <CheckBox Content="{local:Tr SearchFileContents}" IsChecked="{Binding Settings.SearchFileContents}"/>
+            <TextBlock Text="{local:Tr ContentFormats}" Classes="muted" TextWrapping="Wrap" LineHeight="21"/>
+            <CheckBox Content="{local:Tr SearchCaseSensitive}" IsChecked="{Binding Settings.SearchCaseSensitive}"/>
+            <CheckBox Content="{local:Tr SearchWholeWords}" IsChecked="{Binding Settings.SearchWholeWords}"/>
+            <Grid ColumnDefinitions="*,130"><TextBlock Text="{local:Tr SearchMaxFileMb}" VerticalAlignment="Center" TextWrapping="Wrap"/><NumericUpDown Grid.Column="1" Value="{Binding Settings.SearchMaxFileMb}" Minimum="1" Maximum="100" Increment="1" FormatString="0"/></Grid>
+            <Grid ColumnDefinitions="*,130"><TextBlock Text="{local:Tr SearchMaxTextChars}" VerticalAlignment="Center" TextWrapping="Wrap" Margin="0,0,16,0"/><NumericUpDown Grid.Column="1" Value="{Binding Settings.SearchMaxTextChars}" Minimum="10000" Maximum="2000000" Increment="10000" FormatString="0"/></Grid>
+            <Grid ColumnDefinitions="*,130"><TextBlock Text="{local:Tr SearchTimeoutSeconds}" VerticalAlignment="Center" TextWrapping="Wrap"/><NumericUpDown Grid.Column="1" Value="{Binding Settings.SearchTimeoutSeconds}" Minimum="1" Maximum="60" Increment="1" FormatString="0"/></Grid>
+            <TextBlock Text="{local:Tr SearchExcludedExtensions}"/>
+            <TextBox Text="{Binding Settings.SearchExcludedExtensions}" Watermark="pdf, xlsx, log"/>
+            <TextBlock Text="{local:Tr SearchExcludedHint}" Classes="muted" TextWrapping="Wrap"/>
+            <TextBlock Text="{local:Tr SearchSyntax}" Classes="muted" TextWrapping="Wrap" LineHeight="21"/>
+            <TextBlock Text="{local:Tr IndexPrivacy}" Classes="muted" TextWrapping="Wrap" LineHeight="21"/>
+            <TextBlock Text="{Binding IndexSummary}" Foreground="{DynamicResource Breadcrumb}" TextWrapping="Wrap"/>
+            <SelectableTextBlock Text="{Binding IndexPath}" Classes="muted" FontSize="11" TextWrapping="Wrap"/>
+            <WrapPanel Orientation="Horizontal" IsEnabled="{Binding CanManageIndex}"><Button Content="{local:Tr RebuildIndex}" Click="RebuildContentIndex" Margin="0,0,12,8"/><Button Content="{local:Tr ClearIndex}" Click="ClearContentIndex" Margin="0,0,0,8"/></WrapPanel>
+          </StackPanel></Border>
+          <Button Content="{local:Tr Defaults}" Click="ResetAppSettings" HorizontalAlignment="Left"/>
+          <Border Background="{DynamicResource Card}" CornerRadius="12" Padding="24"><StackPanel Spacing="14">
+            <TextBlock Text="{local:Tr HistorySettings}" FontSize="18" FontWeight="SemiBold"/>
+            <TextBlock Text="{local:Tr HistoryHint}" Classes="muted" TextWrapping="Wrap" LineHeight="22"/>
+            <Grid ColumnDefinitions="*,110"><TextBlock Text="{local:Tr HistoryLimit}" VerticalAlignment="Center" TextWrapping="Wrap"/><NumericUpDown Grid.Column="1" Value="{Binding Settings.HistoryLimit}" Minimum="0" Maximum="100" Increment="1" FormatString="0"/></Grid>
+            <TextBlock Text="{local:Tr HistoryLimitHint}" Classes="muted" TextWrapping="Wrap" LineHeight="21"/>
+            <TextBlock Text="{Binding HistorySummary}" Foreground="{DynamicResource Breadcrumb}"/>
+            <Button Content="{local:Tr ClearHistory}" Click="ClearSearchHistory" IsEnabled="{Binding HasHistory}" HorizontalAlignment="Left"/>
+          </StackPanel></Border>
+          <TextBlock Text="{local:Tr About}" FontSize="18" FontWeight="SemiBold" Margin="0,12,0,0"/>
+          <TextBlock Text="Rxst · .NET 10 / Avalonia UI" Foreground="{DynamicResource Breadcrumb}"/>
+          <TextBlock Text="{local:Tr AboutBody}" Classes="muted" TextWrapping="Wrap" LineHeight="23" Margin="0,0,0,24"/>
+          <Button Classes="repository" Click="OpenRepository" HorizontalAlignment="Left" Margin="0,0,0,20" ToolTip.Tip="https://github.com/Rif009/Rxst" AutomationProperties.Name="{local:Tr RepositoryLink}">
+            <TextBlock Text="GitHub · github.com/Rif009/Rxst ↗" Foreground="{DynamicResource Breadcrumb}" TextWrapping="Wrap"/>
+          </Button>
+          <Expander Header="{local:Tr Licenses}" HorizontalContentAlignment="Stretch" Margin="0,0,0,24"><SelectableTextBlock Text="{Binding LicenseText}" TextWrapping="Wrap" FontSize="11" Margin="12"/></Expander>
+        </StackPanel>
+      </ScrollViewer>
+    </Grid>
+    <Border Grid.Row="2" Background="{DynamicResource Rail}" Padding="16,6"><Grid ColumnDefinitions="*,Auto"><TextBlock Text="{Binding Status}" FontSize="10" Classes="muted" TextTrimming="CharacterEllipsis"/><Button Grid.Column="1" Classes="repository" Click="OpenRepository" VerticalAlignment="Center" ToolTip.Tip="{local:Tr RepositoryLink}" AutomationProperties.Name="{local:Tr RepositoryLink}"><TextBlock Text="by rif009" FontSize="11" Foreground="{DynamicResource Breadcrumb}"/></Button></Grid></Border>
+  </Grid>
+</Window>
+
+

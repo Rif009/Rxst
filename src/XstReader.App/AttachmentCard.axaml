@@ -1,0 +1,16 @@
+<UserControl xmlns="https://github.com/avaloniaui" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:local="using:XstReader.App" x:Class="XstReader.App.AttachmentCard">
+  <Border Background="{DynamicResource Card}" BorderBrush="{DynamicResource InputBorder}" BorderThickness="1" CornerRadius="10" Padding="14" Margin="0,0,0,10">
+    <Grid ColumnDefinitions="44,*,40" ColumnSpacing="14">
+      <Border Background="{Binding IconColor}" CornerRadius="10" Width="44" Height="48" VerticalAlignment="Center">
+        <Path Data="{Binding IconPath}" Stroke="White" StrokeThickness="1.6" Width="24" Height="26" Stretch="Uniform" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+      </Border>
+      <StackPanel Grid.Column="1" Spacing="7" VerticalAlignment="Center">
+        <TextBlock Text="{Binding FileName}" FontSize="14" FontWeight="SemiBold" TextWrapping="Wrap" MaxLines="2" TextTrimming="CharacterEllipsis" ToolTip.Tip="{Binding FileName}"/>
+        <TextBlock Text="{Binding Details}" Foreground="{DynamicResource PrimaryText}" Opacity="0.72" FontSize="12" TextWrapping="Wrap"/>
+      </StackPanel>
+      <Button Grid.Column="2" Classes="ghost" Width="40" Height="40" Padding="10" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" VerticalAlignment="Center" Click="SaveClicked" ToolTip.Tip="{local:Tr SaveAttachment}" AutomationProperties.Name="{local:Tr SaveAttachment}">
+        <Path Data="M12 3V15 M7 10L12 15L17 10 M4 16V21H20V16" Stroke="{DynamicResource ActionText}" StrokeThickness="1.8" Width="20" Height="20" Stretch="Uniform"/>
+      </Button>
+    </Grid>
+  </Border>
+</UserControl>
